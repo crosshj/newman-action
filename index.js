@@ -28,7 +28,11 @@ async function init () {
       bail: JSON.parse(get('bail')),
       suppressExitCode: JSON.parse(get('suppressExitCode')),
       reporters: get('reporters').split(','),
-      reporter: JSON.parse(get('reporter') || null),
+      reporter: {
+        junit: {
+          export: ''
+        }
+      },
       color: get('color'),
       sslClientCert: get('sslClientCert'),
       sslClientKey: get('sslClientKey'),
@@ -60,9 +64,12 @@ async function init () {
 }
 
 function runNewman (options) {
+  console.log(`File Created in this dir: ${process.cwd()}`);
+ 
   newman.run(options).on('done', (err, summary) => {
     if (err || summary.run.failures.length) {
       core.setFailed('Newman run failed!' + (err || ''))
     }
+    console.log(summary)
   })
 }
